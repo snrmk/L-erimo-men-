@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'erimo | Yönetilebilir Dijital Menü</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4a3525; 
+            --accent-color: #b36b39;  
+            --bg-color: #fcfbfa;
+            --text-dark: #333;
+            --text-light: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #e2ded8; 
+            height: 45vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 4px solid var(--primary-color);
+            width: 100%;
+        }
+
+        .header-logo-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px auto; /* Tam ortalama sağlandı */
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--primary-color);
+        }
+
+        .header-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .header-logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .admin-login-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-login-trigger:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .menu-container {
+            max-width: 1200px;
+            margin: -20px auto 50px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s;
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .delete-cat-icon {
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 5px;
+            transition: 0.2s;
+        }
+        .delete-cat-icon:hover {
+            transform: scale(1.3);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-item {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .item-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #eaeaea;
+        }
+
+        .item-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .item-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+
+        .item-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .item-footer {
+            border-top: 1px dashed #eee;
+            padding-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .admin-actions {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            gap: 5px;
+            z-index: 5;
+        }
+        .admin-btn {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .admin-btn:hover { background: var(--accent-color); }
+
+        .admin-panel {
+            display: none;
+            background: #f8f9fa;
+            border: 2px dashed var(--primary-color);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .admin-panel h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .admin-section-divider {
+            margin: 20px 0;
+            border-top: 1px solid #ddd;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .location-info {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #e2ded8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .edit-location-btn {
+            display: none;
+            background: none;
+            border: 1px dashed #fff;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .edit-location-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sabit Giriş Butonu -->
+    <button class="admin-login-trigger" id="loginBtn" onclick="toggleAdminMode()">
+        <i class="fa-solid fa-lock"></i> <span>Yönetici Girişi</span>
+    </button>
+
+    <header>
+        <div class="header-logo-container">
+            <img class="header-logo-img" src="logo.jpeg" alt="L'erimo Logo">
+        </div>
+        <div class="tagline">Balat'ın Kalbinde, Lezzetin Adresi</div>
+    </header>
+
+    <div class="menu-container">
+        
+        <!-- Yönetim Paneli -->
+        <div class="admin-panel" id="adminPanel">
+            <h2>Ürün Ekle / Düzenle <button class="logout-btn" onclick="logoutAdmin()">Çıkış Yap</button></h2>
+            <form id="menuForm">
+                <input type="hidden" id="editIndex" value="-1">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Ürün Adı</label>
+                        <input type="text" id="itemName" required placeholder="Örn: İtalyan Kruvasan">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Fiyat (TL)</label>
+                        <input type="text" id="itemPrice" required placeholder="Örn: 180 TL">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="itemCategory"></select>
+                </div>
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="itemDesc" rows="3" required placeholder="İçindekiler..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Sos / Eşlikçi Bilgisi</label>
+                    <input type="text" id="itemSauce" placeholder="Örn: Fesleğenli Pesto Sos ile">
+                </div>
+                <div class="form-group">
+                    <label>Fotoğraf Linki (URL)</label>
+                    <input type="url" id="itemImg" placeholder="Örn: https://images.unsplash.com/...">
+                </div>
+                <button type="submit" class="submit-btn" id="formSubmitBtn">Ürünü Menüye Ekle</button>
+            </form>
+
+            <div class="admin-section-divider"></div>
+
+            <!-- Kategori Ekleme Alanı -->
+            <h2>Kategori Yönetimi</h2>
+            <div class="form-row" style="align-items: flex-end;">
+                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                    <label>Yeni Kategori Adı</label>
+                    <input type="text" id="newCategoryName" placeholder="Örn: Frappeler">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <button type="button" class="submit-btn" style="background: var(--accent-color); width: 100%;" onclick="addNewCategory()">Kategori Ekle</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kategoriler Sekmesi -->
+        <div class="category-tabs" id="categoryTabs"></div>
+
+        <!-- Ürünler Listesi -->
+        <div class="menu-grid" id="menu-grid"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 L'erimo Balat. Tüm Hakları Saklıdır.</p>
+        <div class="location-info" id="locationDisplay">Balat, Nilüfer / Bursa<br>Çalışma Saatleri: 09:00 - 22:00</div>
+        <button class="edit-location-btn" id="editLocationBtn" onclick="editLocation()"><i class="fa-solid fa-map-location-dot"></i> Konumu Düzenle</button>
+    </footer>
+
+    <script>
+        const defaultMenu = [
+            {
+                name: "Italian Chicken Bacon",
+                price: "240 TL",
+                category: "sandvic",
+                desc: "Chapata ekmeğinde özel sarımsak, taze otlu tavuk, Manchego peyniri, füme et, ıspanak ve duxelle mantarı.",
+                sauce: "Honey Mustard ve Fesleğenli Domates Sos",
+                img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                name: "Belçika Çikolatalı Kruvasan",
+                price: "160 TL",
+                category: "kruvasan",
+                desc: "Zengin Belçika çikolatası dolgulu ve kaplamalı, üzeri pudra şekeri serpili çıtır kruvasan.",
+                sauce: "Eritilmiş Çikolata ve Krema Sos",
+                img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=80"
+            }
+        ];
+
+        const defaultCategories = [
+            { id: "sandvic", name: "Sandviç" },
+            { id: "bowl", name: "Bowl" },
+            { id: "tost", name: "Tost" },
+            { id: "manti-borek", name: "Mantı & Börek" },
+            { id: "kruvasan", name: "Kruvasan" },
+            { id: "soguk-kahve", name: "Soğuk Kahve" },
+            { id: "sicak-kahve", name: "Sıcak Kahve" },
+            { id: "tatli", name: "Tatlılar" },
+            { id: "matcha", name: "Matcha" }
+        ];
+
+        const ADMIN_PASSWORD = "erim2005"; 
+        let isAdmin = false;
+        let currentCategory = "all";
+
+        let menuItems = JSON.parse(localStorage.getItem('lerimo_menu')) || defaultMenu;
+        let categories = JSON.parse(localStorage.getItem('lerimo_categories')) || defaultCategories;
+        let locationText = localStorage.getItem('lerimo_location') || "Balat, Nilüfer / Bursa<br>Çalışma Saatleri: 09:00 - 22:00";
+
+        function saveToStorage() {
+            localStorage.setItem('lerimo_menu', JSON.stringify(menuItems));
+        }
+
+        function saveCategoriesToStorage() {
+            localStorage.setItem('lerimo_categories', JSON.stringify(categories));
+        }
+
+        function toggleAdminMode() {
+            if (!isAdmin) {
+                let password = prompt("Lütfen Yönetici Şifrenizi Girin:");
+                if (password === ADMIN_PASSWORD) {
+                    isAdmin = true;
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('editLocationBtn').style.display = 'inline-block';
+                    document.getElementById('loginBtn').style.background = '#2ecc71';
+                    document.getElementById('loginBtn').querySelector('span').innerText = 'Yönetici Aktif';
+                    renderCategories();
+                    renderMenu();
+                } else if(password !== null) {
+                    alert("Hatalı şifre!");
+                }
+            } else {
+                logoutAdmin();
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('editLocationBtn').style.display = 'none';
+            document.getElementById('loginBtn').style.background = 'var(--primary-color)';
+            document.getElementById('loginBtn').querySelector('span').innerText = 'Yönetici Girişi';
+            renderCategories();
+            renderMenu();
+        }
+
+        function editLocation() {
+            if(!isAdmin) return;
+            let currentText = locationText.replace(/<br>/g, "\n");
+            let newText = prompt("Aşağıdaki alandan konum ve çalışma saatlerini düzenleyebilirsiniz:", currentText);
+            if (newText !== null) {
+                locationText = newText.replace(/\n/g, "<br>");
+                localStorage.setItem('lerimo_location', locationText);
+                document.getElementById('locationDisplay').innerHTML = locationText;
+            }
+        }
+
+        function generateSlug(text) {
+            return text.toString().toLowerCase().trim()
+                .replace(/[^a-z0-9 -]/g, '') 
+                .replace(/\s+/g, '-') 
+                .replace(/-+/g, '-');
+        }
+
+        function addNewCategory() {
+            const input = document.getElementById('newCategoryName');
+            const catName = input.value.trim();
+            if(!catName) return;
+
+            // Türkçe karakterleri basitçe dönüştürme (Slug için)
+            let slug = catName.toLowerCase()
+                .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+                .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c');
+            slug = generateSlug(slug);
+
+            if(categories.some(c => c.id === slug)) {
+                alert("Bu kategori zaten mevcut!");
+                return;
+            }
+
+            categories.push({ id: slug, name: catName });
+            saveCategoriesToStorage();
+            renderCategories();
+            input.value = '';
+        }
+
+        function deleteCategory(slug, e) {
+            e.stopPropagation(); // Sekme geçişini engellemek için
+            
+            // Eğer bu kategoriye bağlı ürün varsa silinmesin
+            const hasProducts = menuItems.some(item => item.category === slug);
+            if(hasProducts) {
+                alert("Bu kategoriye ait ürünler olduğu için silemezsiniz. Önce ürünleri silin veya kategorilerini değiştirin.");
+                return;
+            }
+
+            if(confirm("Bu kategoriyi silmek istediğinize emin misiniz?")) {
+                categories = categories.filter(c => c.id !== slug);
+                if(currentCategory === slug) currentCategory = "all";
+                saveCategoriesToStorage();
+                renderCategories();
+                renderMenu();
+            }
+        }
+
+        function renderCategories() {
+            // Üst Sekmelere Render Etme
+            const tabsContainer = document.getElementById('categoryTabs');
+            let tabsHTML = `<button class="tab-btn ${currentCategory === 'all' ? 'active' : ''}" onclick="filterCategory('all', this)">Tümü</button>`;
+            
+            categories.forEach(cat => {
+                const isActive = currentCategory === cat.id ? 'active' : '';
+                const deleteIcon = isAdmin ? `<i class="fa-solid fa-circle-xmark delete-cat-icon" onclick="deleteCategory('${cat.id}', event)"></i>` : '';
+                tabsHTML += `<button class="tab-btn ${isActive}" onclick="filterCategory('${cat.id}', this)">${cat.name} ${deleteIcon}</button>`;
+            });
+            tabsContainer.innerHTML = tabsHTML;
+
+            // Seçim Kutusuna (Select) Render Etme
+            const selectContainer = document.getElementById('itemCategory');
+            selectContainer.innerHTML = categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+        }
+
+        function renderMenu() {
+            document.getElementById('locationDisplay').innerHTML = locationText;
+            const grid = document.getElementById('menu-grid');
+            let filtered = menuItems;
+            
+            if (currentCategory !== 'all') {
+                filtered = menuItems.filter(item => item.category === currentCategory);
+            }
+
+            grid.innerHTML = filtered.map((item, index) => {
+                const realIndex = menuItems.indexOf(item);
+                const defaultImg = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=500&q=80";
+                
+                return `
+                    <div class="menu-item">
+                        <div class="admin-actions" style="display: ${isAdmin ? 'flex' : 'none'}">
+                            <button class="admin-btn" onclick="editItem(${realIndex})"><i class="fa-solid fa-pen"></i></button>
+                            <button class="admin-btn" onclick="deleteItem(${realIndex})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <img class="item-img" src="${item.img || defaultImg}" alt="${item.name}">
+                        <div class="item-body">
+                            <div>
+                                <div class="item-header">
+                                    <h3 class="item-title">${item.name}</h3>
+                                    <span class="item-price">${item.price || '---'}</span>
+                                </div>
+                                <p class="item-desc">${item.desc}</p>
+                            </div>
+                            <div class="item-footer">
+                                <span><i class="fa-solid fa-utensils"></i> ${item.sauce || 'Klasik Sunum'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderMenu();
+        }
+
+        document.getElementById('menuForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isAdmin) return;
+
+            const name = document.getElementById('itemName').value;
+            const price = document.getElementById('itemPrice').value;
+            const category = document.getElementById('itemCategory').value;
+            const desc = document.getElementById('itemDesc').value;
+            const sauce = document.getElementById('itemSauce').value;
+            const img = document.getElementById('itemImg').value;
+            const editIndex = parseInt(document.getElementById('editIndex').value);
+
+            const newItem = { name, price, category, desc, sauce, img };
+
+            if (editIndex === -1) {
+                menuItems.push(newItem);
+            } else {
+                menuItems[editIndex] = newItem;
+                document.getElementById('editIndex').value = "-1";
+                document.getElementById('formSubmitBtn').innerText = "Ürünü Menüye Ekle";
+            }
+
+            saveToStorage();
+            renderMenu();
+            this.reset();
+        });
+
+        function deleteItem(index) {
+            if (confirm("Bu ürünü silmek istediğinize emin misiniz?")) {
+                menuItems.splice(index, 1);
+                saveToStorage();
+                renderMenu();
+            }
+        }
+
+        function editItem(index) {
+            const item = menuItems[index];
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemPrice').value = item.price || '';
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemDesc').value = item.desc;
+            document.getElementById('itemSauce').value = item.sauce;
+            document.getElementById('itemImg').value = item.img;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('formSubmitBtn').innerText = "Değişiklikleri Kaydet";
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // İlk kurulum çalıştırmaları
+        renderCategories();
+        renderMenu();
+    </script>
+</body>
+</html>

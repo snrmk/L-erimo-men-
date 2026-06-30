@@ -282,7 +282,7 @@
             margin-bottom: 15px;
         }
 
-        .form-group {
+        .form-row .form-group {
             flex: 1;
         }
 
@@ -384,8 +384,8 @@
 
     <header>
         <div class="header-logo-container">
-            <!-- İlettiğiniz tam file URL adresi doğrudan entegre edildi -->
-            <img class="header-logo-img" src="file:///C:/Users/sutba/Desktop/L'erimo/logo.jpeg" alt="L'erimo Logo">
+            <!-- Dosya yolu, GitHub Pages ve yerel klasör uyumluluğu için güncellendi -->
+            <img class="header-logo-img" src="logo.jpeg" alt="L'erimo Logo">
         </div>
         <div class="tagline">Balat'ın Kalbinde, Lezzetin Adresi</div>
     </header>
@@ -416,7 +416,6 @@
                     </div>
                 </div>
 
-                <!-- Tükendi Onay Kutusu Kesin Olarak Sabit Satırda -->
                 <div class="checkbox-group">
                     <input type="checkbox" id="itemSoldOut">
                     <label for="itemSoldOut">Tükendi (Stok Yok)</label>
@@ -715,7 +714,6 @@
         renderCategories();
         renderMenu();
         
-        // Eğer yerel hafızada admin aktifse formu açık tut
         if(localStorage.getItem('lerimo_admin_active') === 'true' || isAdmin) {
             document.getElementById('adminPanel').style.display = 'block';
         }

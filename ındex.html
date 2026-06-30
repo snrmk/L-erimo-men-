@@ -33,40 +33,36 @@
 
         header {
             background-color: #e2ded8; 
-            height: 45vh;
+            min-height: 35vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
             border-bottom: 4px solid var(--primary-color);
             width: 100%;
         }
 
         .header-logo-container {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 15px auto; /* Tam ortalama sağlandı */
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 15px auto;
             border-radius: 50%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             overflow: hidden;
             background-color: #fff;
+            border: 4px solid var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 4px solid var(--primary-color);
         }
 
         .header-logo-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .header-logo-img:hover {
-            transform: scale(1.05);
+            display: block;
         }
 
         .tagline {
@@ -77,7 +73,6 @@
             color: var(--primary-color);
             font-family: 'Playfair Display', serif;
             margin-top: 5px;
-            width: 100%;
         }
 
         .admin-login-trigger {
@@ -98,11 +93,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        
-        .admin-login-trigger:hover {
-            background: var(--accent-color);
-            transform: scale(1.05);
         }
 
         .menu-container {
@@ -152,10 +142,6 @@
             cursor: pointer;
             font-size: 0.8rem;
             margin-left: 5px;
-            transition: 0.2s;
-        }
-        .delete-cat-icon:hover {
-            transform: scale(1.3);
         }
 
         .menu-grid {
@@ -176,8 +162,30 @@
             position: relative;
         }
 
-        .menu-item:hover {
-            transform: translateY(-5px);
+        .menu-item.sold-out .item-img {
+            filter: grayscale(0.8) blur(1px);
+            opacity: 0.5;
+        }
+
+        .menu-item.sold-out .item-title, 
+        .menu-item.sold-out .item-price {
+            color: #95a5a6;
+            text-decoration: line-through;
+        }
+
+        .sold-out-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 4px;
+            z-index: 4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .item-img {
@@ -246,9 +254,7 @@
             padding: 8px;
             border-radius: 50%;
             cursor: pointer;
-            transition: 0.2s;
         }
-        .admin-btn:hover { background: var(--accent-color); }
 
         .admin-panel {
             display: none;
@@ -273,10 +279,10 @@
         .form-row {
             display: flex;
             gap: 15px;
+            margin-bottom: 15px;
         }
 
         .form-group {
-            margin-bottom: 15px;
             flex: 1;
         }
 
@@ -295,11 +301,34 @@
             font-family: inherit;
         }
 
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            font-weight: bold;
+            color: #e74c3c;
+            cursor: pointer;
+            margin-bottom: 0;
+            user-select: none;
+        }
+
         .submit-btn {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 25px;
+            padding: 12px 25px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -344,24 +373,19 @@
             font-size: 0.75rem;
             cursor: pointer;
             margin-top: 10px;
-            transition: 0.2s;
-        }
-
-        .edit-location-btn:hover {
-            background: rgba(255,255,255,0.1);
         }
     </style>
 </head>
 <body>
 
-    <!-- Sabit Giriş Butonu -->
     <button class="admin-login-trigger" id="loginBtn" onclick="toggleAdminMode()">
         <i class="fa-solid fa-lock"></i> <span>Yönetici Girişi</span>
     </button>
 
     <header>
         <div class="header-logo-container">
-            <img class="header-logo-img" src="logo.jpeg" alt="L'erimo Logo">
+            <!-- İlettiğiniz tam file URL adresi doğrudan entegre edildi -->
+            <img class="header-logo-img" src="file:///C:/Users/sutba/Desktop/L'erimo/logo.jpeg" alt="L'erimo Logo">
         </div>
         <div class="tagline">Balat'ın Kalbinde, Lezzetin Adresi</div>
     </header>
@@ -373,6 +397,7 @@
             <h2>Ürün Ekle / Düzenle <button class="logout-btn" onclick="logoutAdmin()">Çıkış Yap</button></h2>
             <form id="menuForm">
                 <input type="hidden" id="editIndex" value="-1">
+                
                 <div class="form-row">
                     <div class="form-group" style="flex: 2;">
                         <label>Ürün Adı</label>
@@ -383,44 +408,53 @@
                         <input type="text" id="itemPrice" required placeholder="Örn: 180 TL">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Kategori</label>
-                    <select id="itemCategory"></select>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="itemCategory"></select>
+                    </div>
                 </div>
-                <div class="form-group">
+
+                <!-- Tükendi Onay Kutusu Kesin Olarak Sabit Satırda -->
+                <div class="checkbox-group">
+                    <input type="checkbox" id="itemSoldOut">
+                    <label for="itemSoldOut">Tükendi (Stok Yok)</label>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
                     <label>Açıklama</label>
                     <textarea id="itemDesc" rows="3" required placeholder="İçindekiler..."></textarea>
                 </div>
-                <div class="form-group">
+
+                <div class="form-group" style="margin-bottom: 15px;">
                     <label>Sos / Eşlikçi Bilgisi</label>
                     <input type="text" id="itemSauce" placeholder="Örn: Fesleğenli Pesto Sos ile">
                 </div>
-                <div class="form-group">
+
+                <div class="form-group" style="margin-bottom: 20px;">
                     <label>Fotoğraf Linki (URL)</label>
                     <input type="url" id="itemImg" placeholder="Örn: https://images.unsplash.com/...">
                 </div>
+
                 <button type="submit" class="submit-btn" id="formSubmitBtn">Ürünü Menüye Ekle</button>
             </form>
 
             <div class="admin-section-divider"></div>
 
-            <!-- Kategori Ekleme Alanı -->
             <h2>Kategori Yönetimi</h2>
             <div class="form-row" style="align-items: flex-end;">
-                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                <div class="form-group" style="flex: 2;">
                     <label>Yeni Kategori Adı</label>
                     <input type="text" id="newCategoryName" placeholder="Örn: Frappeler">
                 </div>
-                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <div class="form-group" style="flex: 1;">
                     <button type="button" class="submit-btn" style="background: var(--accent-color); width: 100%;" onclick="addNewCategory()">Kategori Ekle</button>
                 </div>
             </div>
         </div>
 
-        <!-- Kategoriler Sekmesi -->
         <div class="category-tabs" id="categoryTabs"></div>
-
-        <!-- Ürünler Listesi -->
         <div class="menu-grid" id="menu-grid"></div>
     </div>
 
@@ -438,7 +472,8 @@
                 category: "sandvic",
                 desc: "Chapata ekmeğinde özel sarımsak, taze otlu tavuk, Manchego peyniri, füme et, ıspanak ve duxelle mantarı.",
                 sauce: "Honey Mustard ve Fesleğenli Domates Sos",
-                img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=500&q=80"
+                img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=500&q=80",
+                soldOut: false
             },
             {
                 name: "Belçika Çikolatalı Kruvasan",
@@ -446,7 +481,8 @@
                 category: "kruvasan",
                 desc: "Zengin Belçika çikolatası dolgulu ve kaplamalı, üzeri pudra şekeri serpili çıtır kruvasan.",
                 sauce: "Eritilmiş Çikolata ve Krema Sos",
-                img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=80"
+                img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=80",
+                soldOut: true
             }
         ];
 
@@ -510,7 +546,7 @@
         function editLocation() {
             if(!isAdmin) return;
             let currentText = locationText.replace(/<br>/g, "\n");
-            let newText = prompt("Aşağıdaki alandan konum ve çalışma saatlerini düzenleyebilirsiniz:", currentText);
+            let newText = prompt("Konum ve çalışma saatlerini düzenleyin:", currentText);
             if (newText !== null) {
                 locationText = newText.replace(/\n/g, "<br>");
                 localStorage.setItem('lerimo_location', locationText);
@@ -530,7 +566,6 @@
             const catName = input.value.trim();
             if(!catName) return;
 
-            // Türkçe karakterleri basitçe dönüştürme (Slug için)
             let slug = catName.toLowerCase()
                 .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
                 .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c');
@@ -548,12 +583,10 @@
         }
 
         function deleteCategory(slug, e) {
-            e.stopPropagation(); // Sekme geçişini engellemek için
-            
-            // Eğer bu kategoriye bağlı ürün varsa silinmesin
+            e.stopPropagation();
             const hasProducts = menuItems.some(item => item.category === slug);
             if(hasProducts) {
-                alert("Bu kategoriye ait ürünler olduğu için silemezsiniz. Önce ürünleri silin veya kategorilerini değiştirin.");
+                alert("Bu kategoriye ait ürünler olduğu için silemezsiniz.");
                 return;
             }
 
@@ -567,7 +600,6 @@
         }
 
         function renderCategories() {
-            // Üst Sekmelere Render Etme
             const tabsContainer = document.getElementById('categoryTabs');
             let tabsHTML = `<button class="tab-btn ${currentCategory === 'all' ? 'active' : ''}" onclick="filterCategory('all', this)">Tümü</button>`;
             
@@ -578,7 +610,6 @@
             });
             tabsContainer.innerHTML = tabsHTML;
 
-            // Seçim Kutusuna (Select) Render Etme
             const selectContainer = document.getElementById('itemCategory');
             selectContainer.innerHTML = categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
         }
@@ -596,8 +627,12 @@
                 const realIndex = menuItems.indexOf(item);
                 const defaultImg = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=500&q=80";
                 
+                const soldOutClass = item.soldOut ? 'sold-out' : '';
+                const soldOutBadge = item.soldOut ? `<div class="sold-out-badge">Tükendi</div>` : '';
+
                 return `
-                    <div class="menu-item">
+                    <div class="menu-item ${soldOutClass}">
+                        ${soldOutBadge}
                         <div class="admin-actions" style="display: ${isAdmin ? 'flex' : 'none'}">
                             <button class="admin-btn" onclick="editItem(${realIndex})"><i class="fa-solid fa-pen"></i></button>
                             <button class="admin-btn" onclick="deleteItem(${realIndex})"><i class="fa-solid fa-trash"></i></button>
@@ -637,9 +672,10 @@
             const desc = document.getElementById('itemDesc').value;
             const sauce = document.getElementById('itemSauce').value;
             const img = document.getElementById('itemImg').value;
+            const soldOut = document.getElementById('itemSoldOut').checked; 
             const editIndex = parseInt(document.getElementById('editIndex').value);
 
-            const newItem = { name, price, category, desc, sauce, img };
+            const newItem = { name, price, category, desc, sauce, img, soldOut };
 
             if (editIndex === -1) {
                 menuItems.push(newItem);
@@ -670,14 +706,19 @@
             document.getElementById('itemDesc').value = item.desc;
             document.getElementById('itemSauce').value = item.sauce;
             document.getElementById('itemImg').value = item.img;
+            document.getElementById('itemSoldOut').checked = item.soldOut || false; 
             document.getElementById('editIndex').value = index;
             document.getElementById('formSubmitBtn').innerText = "Değişiklikleri Kaydet";
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        // İlk kurulum çalıştırmaları
         renderCategories();
         renderMenu();
+        
+        // Eğer yerel hafızada admin aktifse formu açık tut
+        if(localStorage.getItem('lerimo_admin_active') === 'true' || isAdmin) {
+            document.getElementById('adminPanel').style.display = 'block';
+        }
     </script>
 </body>
 </html>
